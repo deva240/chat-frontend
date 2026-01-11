@@ -1,15 +1,42 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Message from "./Message";
+import { socket } from "./socket";
+import api from "./api";
 
-function MessageList({ messages, onDelete, onEdit, currentUserId }) {
+function MessageList({ currentUserId, onDelete, onEdit }) {
+  const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
 
+  // 1️⃣ Load existing messages from backend
+  useEffect(() => {
+    api
+      .get("/messages")
+      .then((res) => {
+        setMessages(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to load messages:", err);
+      });
+  }, []);
+
+  // 2️⃣ Listen for real-time messages via Socket.IO
+  useEffect(() => {
+    socket.on("new_message", (message) => {
+      setMessages((prev) => [...prev, message]);
+    });
+
+    return () => {
+      socket.off("new_message");
+    };
+  }, []);
+
+  // 3️⃣ Auto-scroll when messages change
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
-    <div>
+    <div style={{ padding: "10px", overflowY: "auto" }}>
       {messages.map((msg) => (
         <Message
           key={msg.id}
