@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "./api";
-import MessageInput from "./MessageInput";
-import MessageList from "./MessageList";
+import Chat from "./Chat";
 import useTheme from "./useTheme";
 import { socket } from "./socket";
 import Login from "./Login";
@@ -177,27 +176,8 @@ function App() {
       >
         {dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
       </button>
+<Chat currentUser={user} />
 
-      <MessageInput onSend={addMessage} />
-
-      <div
-        style={{
-          maxHeight: "400px",
-          overflowY: "auto",
-          marginTop: "20px",
-          padding: "10px",
-          borderRadius: "10px",
-          backgroundColor: dark ? "#2b2b2b" : "#f9f9f9",
-          border: dark ? "1px solid #555" : "1px solid #ddd",
-        }}
-      >
-        <MessageList
-          messages={messages}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-          currentUserId={currentUserId}
-        />
-      </div>
     </div>
   );
 }
