@@ -37,15 +37,38 @@ function Chat({ currentUser }) {
     };
   }, []);
 
-  return (
-    <div>
+ return (
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      height: "100vh",
+      maxWidth: "600px",
+      margin: "0 auto",
+    }}
+  >
+    {/* Messages */}
+    <div
+      style={{
+        flex: 1,
+        overflowY: "auto",
+        padding: "10px",
+        backgroundColor: "#f9f9f9",
+        borderRadius: "10px",
+        marginBottom: "10px",
+      }}
+    >
       <MessageList
         messages={messages}
         currentUserId={currentUser.id}
       />
-      <MessageInput />
     </div>
-  );
+
+    {/* Input */}
+    <MessageInput />
+  </div>
+);
+
 }
 
 export default Chat;
