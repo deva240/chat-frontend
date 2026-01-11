@@ -3,7 +3,7 @@ import api from "./api";
 import MessageInput from "./MessageInput";
 import MessageList from "./MessageList";
 import useTheme from "./useTheme";
-import socket from "./socket";
+import { socket } from "./socket";
 import Login from "./Login";
 import Signup from "./Signup";
 
