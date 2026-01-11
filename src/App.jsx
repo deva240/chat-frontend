@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "./api";
 import Chat from "./Chat";
 import useTheme from "./useTheme";
-import { socket } from "./socket";
+import socket from "./socket"; // ✅ FIXED
 import Login from "./Login";
 import Signup from "./Signup";
 
@@ -32,12 +32,8 @@ function App() {
     if (!token) return;
 
     const decoded = parseJwt(token);
-
     if (decoded?.id && decoded?.username) {
-      setUser({
-        id: decoded.id,
-        username: decoded.username,
-      });
+      setUser({ id: decoded.id, username: decoded.username });
     }
   }, []);
 
@@ -47,14 +43,9 @@ function App() {
   useEffect(() => {
     if (!user) return;
 
-    api
-      .get("/messages")
-      .then((res) => {
-        setMessages(res.data);
-      })
-      .catch((err) => {
-        console.error("Error loading messages:", err);
-      });
+    api.get("/messages")
+      .then(res => setMessages(res.data))
+      .catch(err => console.error(err));
   }, [user]);
 
   // -------------------------
@@ -65,22 +56,18 @@ function App() {
       console.log("✅ SOCKET CONNECTED:", socket.id);
     });
 
-    socket.on("messageCreated", (msg) => {
-      setMessages((prev) => [...prev, msg]);
+    socket.on("messageCreated", msg => {
+      setMessages(prev => [...prev, msg]);
     });
 
-    socket.on("messageUpdated", (updatedMsg) => {
-      setMessages((prev) =>
-        prev.map((m) => (m.id === updatedMsg.id ? updatedMsg : m))
+    socket.on("messageUpdated", updatedMsg => {
+      setMessages(prev =>
+        prev.map(m => (m.id === updatedMsg.id ? updatedMsg : m))
       );
     });
 
     socket.on("messageDeleted", ({ id }) => {
-      setMessages((prev) => prev.filter((m) => m.id !== id));
-    });
-
-    socket.on("disconnect", () => {
-      console.log("❌ SOCKET DISCONNECTED");
+      setMessages(prev => prev.filter(m => m.id !== id));
     });
 
     return () => {
@@ -88,19 +75,18 @@ function App() {
       socket.off("messageCreated");
       socket.off("messageUpdated");
       socket.off("messageDeleted");
-      socket.off("disconnect");
     };
   }, []);
 
   // -------------------------
-  // NOT LOGGED IN VIEW
+  // AUTH VIEWS
   // -------------------------
   if (!user) {
     return showSignup ? (
       <Signup onSignup={() => setShowSignup(false)} />
     ) : (
       <Login
-        onLogin={(u) => setUser(u)}
+        onLogin={setUser}
         onSwitchToSignup={() => setShowSignup(true)}
       />
     );
@@ -123,10 +109,8 @@ function App() {
     await api.delete(`/messages/${id}`);
   }
 
-  const currentUserId = user.id;
-
   // -------------------------
-  // CHAT UI
+  // UI
   // -------------------------
   return (
     <div
@@ -136,8 +120,7 @@ function App() {
         padding: "20px",
         borderRadius: "10px",
         backgroundColor: dark ? "#1e1e1e" : "white",
-        color: dark ? "white" : "black",
-        boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+        color: dark ? "white" : "black"
       }}
     >
       <h2 style={{ textAlign: "center" }}>Chat App</h2>
@@ -147,37 +130,22 @@ function App() {
           localStorage.removeItem("token");
           setUser(null);
         }}
-        style={{
-          width: "100%",
-          padding: "8px",
-          marginBottom: "10px",
-          backgroundColor: "#e74c3c",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
       >
         Logout
       </button>
 
-      <button
-        onClick={toggleDark}
-        style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: dark ? "#444" : "#ddd",
-          color: dark ? "white" : "black",
-          borderRadius: "5px",
-          border: "none",
-          cursor: "pointer",
-          marginBottom: "15px",
-        }}
-      >
-        {dark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      <button onClick={toggleDark}>
+        {dark ? "Light Mode" : "Dark Mode"}
       </button>
-<Chat currentUser={user} />
 
+      {/* ✅ CORRECT PROPS */}
+      <Chat
+        messages={messages}
+        onSend={addMessage}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        currentUser={user}
+      />
     </div>
   );
 }
