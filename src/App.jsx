@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "./api";
 import Chat from "./Chat";
 import useTheme from "./useTheme";
-import socket from "./socket"; // ✅ FIXED
+import { socket } from "./socket";
 import Login from "./Login";
 import Signup from "./Signup";
 
