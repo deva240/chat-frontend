@@ -20,7 +20,7 @@ function parseJwt(token) {
 function App() {
   const [user, setUser] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
-  const [messages, setMessages] = useState([]);
+ 
 
   const { dark, toggleDark } = useTheme();
 

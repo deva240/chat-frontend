@@ -4,7 +4,7 @@ import MessageInput from "./MessageInput";
 import api from "./api";
 import { socket } from "./socket";
 
-function Chat({ currentUser }) {
+function Chat({ currentUser, onSend, onEdit, onDelete }) {
   const [messages, setMessages] = useState([]);
 
   // Load messages once
@@ -14,15 +14,15 @@ function Chat({ currentUser }) {
     });
   }, []);
 
-  // 🔥 Socket real-time updates
+  // 🔥 SOCKET EVENTS (MATCH BACKEND EXACTLY)
   useEffect(() => {
     socket.on("new_message", (msg) => {
       setMessages((prev) => [...prev, msg]);
     });
 
-    socket.on("edit_message", (msg) => {
+    socket.on("edit_message", (updated) => {
       setMessages((prev) =>
-        prev.map((m) => (m.id === msg.id ? msg : m))
+        prev.map((m) => (m.id === updated.id ? updated : m))
       );
     });
 
@@ -37,38 +37,37 @@ function Chat({ currentUser }) {
     };
   }, []);
 
- return (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      height: "100vh",
-      maxWidth: "600px",
-      margin: "0 auto",
-    }}
-  >
-    {/* Messages */}
+  return (
     <div
       style={{
-        flex: 1,
-        overflowY: "auto",
-        padding: "10px",
-        backgroundColor: "#f9f9f9",
-        borderRadius: "10px",
-        marginBottom: "10px",
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        maxWidth: "600px",
+        margin: "0 auto",
       }}
     >
-      <MessageList
-        messages={messages}
-        currentUserId={currentUser.id}
-      />
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "10px",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        <MessageList
+          messages={messages}
+          currentUserId={currentUser.id}
+          onDelete={onDelete}
+          onEdit={onEdit}
+        />
+      </div>
+
+      <MessageInput onSend={onSend} />
     </div>
-
-    {/* Input */}
-    <MessageInput />
-  </div>
-);
-
+  );
 }
 
 export default Chat;
