@@ -3,7 +3,7 @@ import Message from "./Message";
 import { socket } from "./socket";
 import api from "./api";
 
-function MessageList({ currentUserId, onDelete, onEdit ,messages}) {
+function MessageList({ currentUserId, onDelete, onEdit}) {
   const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
 
