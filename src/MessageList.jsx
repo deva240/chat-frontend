@@ -29,6 +29,23 @@ function MessageList({ currentUserId, onDelete, onEdit }) {
       socket.off("new_message");
     };
   }, []);
+  useEffect(() => {
+  socket.on("delete_message", (id) => {
+    setMessages((prev) => prev.filter((m) => m.id !== id));
+  });
+
+  socket.on("edit_message", (msg) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === msg.id ? msg : m))
+    );
+  });
+
+  return () => {
+    socket.off("delete_message");
+    socket.off("edit_message");
+  };
+}, []);
+
 
   // 3️⃣ Auto-scroll when messages change
   useEffect(() => {
