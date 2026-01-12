@@ -1,81 +1,57 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "./api";
 
-function Login({ onLogin, onSwitchToSignup }) {
+function Login({ onLogin, onSwitch }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  async function handleLogin(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
-      const res = await axios.post(
-  "https://chat-backend-2nh2.onrender.com/auth/login",
-  {
-
+      const res = await api.post("/auth/login", {
         username,
         password,
       });
 
-      localStorage.setItem("token", res.data.token);
-     onLogin({
-  id: res.data.user.id,
-  username: res.data.user.username
-});
-
+      // ✅ THIS IS CRITICAL
+      // res.data MUST contain { token, user }
+      onLogin(res.data);
     } catch (err) {
       setError("Invalid username or password");
     }
-  }
+  };
 
   return (
-    <div style={{ width: "350px", margin: "50px auto" }}>
+    <div style={{ maxWidth: "400px", margin: "auto", padding: "40px" }}>
       <h2>Login</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
         <input
-          type="text"
-          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+          placeholder="Username"
+          required
         />
-
+        <br /><br />
         <input
           type="password"
-          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+          placeholder="Password"
+          required
         />
-
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            padding: "10px",
-            backgroundColor: "#4caf50",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Login
-        </button>
+        <br /><br />
+        <button type="submit">Login</button>
       </form>
 
-      <p style={{ marginTop: "15px", textAlign: "center" }}>
+      <p style={{ marginTop: "15px" }}>
         Don't have an account?{" "}
-        <span
-          onClick={onSwitchToSignup}
-          style={{ color: "blue", cursor: "pointer", textDecoration: "underline" }}
-        >
-          Create one
-        </span>
+        <button onClick={onSwitch}>Create one</button>
       </p>
     </div>
   );
