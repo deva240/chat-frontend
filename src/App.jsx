@@ -3,6 +3,8 @@ import api from "./api";
 import { socket } from "./socket";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
+import Login from "./Login";
+import Signup from "./Signup";
 import "./Chat.css";
 
 function App() {
@@ -10,10 +12,11 @@ function App() {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user"))
   );
+  const [showSignup, setShowSignup] = useState(false);
 
   const currentUserId = user?.id;
 
-  // Load messages once
+  // Load messages once logged in
   useEffect(() => {
     if (!user) return;
 
@@ -45,7 +48,6 @@ function App() {
     };
   }, []);
 
-  // API calls (state is updated by socket)
   const sendMessage = async text => {
     await api.post("/messages", { text });
   };
@@ -58,10 +60,30 @@ function App() {
     await api.put(`/messages/${id}`, { text });
   };
 
+  // 🔑 LOGIN / SIGNUP HANDLING
   if (!user) {
-    return <h3>Please login</h3>;
+    return showSignup ? (
+      <Signup
+        onSignup={(data) => {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          setUser(data.user);
+        }}
+        onSwitch={() => setShowSignup(false)}
+      />
+    ) : (
+      <Login
+        onLogin={(data) => {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          setUser(data.user);
+        }}
+        onSwitch={() => setShowSignup(true)}
+      />
+    );
   }
 
+  // 💬 CHAT UI
   return (
     <div className="chat-container">
       <h2 className="chat-title">Realtime Chat</h2>
