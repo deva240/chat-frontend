@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
+import api from "./api";
 import socket from "./socket";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import api from "./api";
 
-function Chat({ user }) {
+function Chat({ currentUser }) {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    socket.connect();
-
     api.get("/messages").then((res) => {
       setMessages(res.data);
     });
@@ -32,12 +30,16 @@ function Chat({ user }) {
       socket.off("new_message");
       socket.off("delete_message");
       socket.off("edit_message");
-      socket.disconnect();
     };
   }, []);
 
   const sendMessage = async (text) => {
-    await api.post("/messages", { text });
+    try {
+      await api.post("/messages", { text });
+      // socket will update UI
+    } catch (err) {
+      console.error("Send failed:", err);
+    }
   };
 
   const deleteMessage = async (id) => {
@@ -49,15 +51,15 @@ function Chat({ user }) {
   };
 
   return (
-    <>
+    <div>
       <MessageList
         messages={messages}
-        currentUserId={user.id}
+        currentUserId={currentUser.id}
         onDelete={deleteMessage}
         onEdit={editMessage}
       />
       <MessageInput onSend={sendMessage} />
-    </>
+    </div>
   );
 }
 
