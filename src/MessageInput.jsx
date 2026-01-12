@@ -3,25 +3,22 @@ import { useState } from "react";
 function MessageInput({ onSend }) {
   const [text, setText] = useState("");
 
-  function send() {
+  const submit = e => {
+    e.preventDefault();
     if (!text.trim()) return;
     onSend(text);
     setText("");
-  }
+  };
 
   return (
-    <div>
+    <form className="message-input" onSubmit={submit}>
       <input
-        placeholder="Type message..."
         value={text}
-        onChange={(e) => setText(e.target.value)}
-        style={{ width: "100%", padding: "8px" }}
+        onChange={e => setText(e.target.value)}
+        placeholder="Type message..."
       />
-
-      <button onClick={send} style={{ width: "100%", padding: "10px", marginTop: "8px" }}>
-        Send
-      </button>
-    </div>
+      <button type="submit">Send</button>
+    </form>
   );
 }
 

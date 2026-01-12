@@ -1,45 +1,19 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import api from "./api";
-import Chat from "./Chat";
-import useTheme from "./useTheme";
 import { socket } from "./socket";
-import Login from "./Login";
-import Signup from "./Signup";
-
-// -------------------------
-// Decode JWT
-// -------------------------
-function parseJwt(token) {
-  try {
-    return JSON.parse(atob(token.split(".")[1]));
-  } catch {
-    return null;
-  }
-}
+import MessageList from "./MessageList";
+import MessageInput from "./MessageInput";
+import "./Chat.css";
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [showSignup, setShowSignup] = useState(false);
- 
+  const [messages, setMessages] = useState([]);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user"))
+  );
 
-  const { dark, toggleDark } = useTheme();
+  const currentUserId = user?.id;
 
-  // -------------------------
-  // AUTO LOGIN ON REFRESH
-  // -------------------------
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
-    const decoded = parseJwt(token);
-    if (decoded?.id && decoded?.username) {
-      setUser({ id: decoded.id, username: decoded.username });
-    }
-  }, []);
-
-  // -------------------------
-  // LOAD MESSAGES AFTER LOGIN
-  // -------------------------
+  // Load messages once
   useEffect(() => {
     if (!user) return;
 
@@ -48,21 +22,15 @@ function App() {
       .catch(err => console.error(err));
   }, [user]);
 
-  // -------------------------
-  // SOCKET REAL-TIME HANDLING
-  // -------------------------
+  // Socket listeners
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("✅ SOCKET CONNECTED:", socket.id);
-    });
-
     socket.on("messageCreated", msg => {
       setMessages(prev => [...prev, msg]);
     });
 
-    socket.on("messageUpdated", updatedMsg => {
+    socket.on("messageUpdated", updated => {
       setMessages(prev =>
-        prev.map(m => (m.id === updatedMsg.id ? updatedMsg : m))
+        prev.map(m => (m.id === updated.id ? updated : m))
       );
     });
 
@@ -71,81 +39,41 @@ function App() {
     });
 
     return () => {
-      socket.off("connect");
       socket.off("messageCreated");
       socket.off("messageUpdated");
       socket.off("messageDeleted");
     };
   }, []);
 
-  // -------------------------
-  // AUTH VIEWS
-  // -------------------------
-  if (!user) {
-    return showSignup ? (
-      <Signup onSignup={() => setShowSignup(false)} />
-    ) : (
-      <Login
-        onLogin={setUser}
-        onSwitchToSignup={() => setShowSignup(true)}
-      />
-    );
-  }
-
-  // -------------------------
-  // MESSAGE ACTIONS
-  // -------------------------
-  async function addMessage(text) {
-    if (!text.trim()) return;
+  // API calls (state is updated by socket)
+  const sendMessage = async text => {
     await api.post("/messages", { text });
-  }
+  };
 
-  async function handleEdit(id, newText) {
-    if (!newText.trim()) return;
-    await api.put(`/messages/${id}`, { text: newText });
-  }
-
-  async function handleDelete(id) {
+  const handleDelete = async id => {
     await api.delete(`/messages/${id}`);
+  };
+
+  const handleEdit = async (id, text) => {
+    await api.put(`/messages/${id}`, { text });
+  };
+
+  if (!user) {
+    return <h3>Please login</h3>;
   }
 
-  // -------------------------
-  // UI
-  // -------------------------
   return (
-    <div
-      style={{
-        width: "400px",
-        margin: "30px auto",
-        padding: "20px",
-        borderRadius: "10px",
-        backgroundColor: dark ? "#1e1e1e" : "white",
-        color: dark ? "white" : "black"
-      }}
-    >
-      <h2 style={{ textAlign: "center" }}>Chat App</h2>
+    <div className="chat-container">
+      <h2 className="chat-title">Realtime Chat</h2>
 
-      <button
-        onClick={() => {
-          localStorage.removeItem("token");
-          setUser(null);
-        }}
-      >
-        Logout
-      </button>
-
-      <button onClick={toggleDark}>
-        {dark ? "Light Mode" : "Dark Mode"}
-      </button>
-
-      {/* ✅ CORRECT PROPS */}
-      <Chat
+      <MessageList
         messages={messages}
-        onSend={addMessage}
-        onEdit={handleEdit}
+        currentUserId={currentUserId}
         onDelete={handleDelete}
-        currentUser={user}
+        onEdit={handleEdit}
       />
+
+      <MessageInput onSend={sendMessage} />
     </div>
   );
 }

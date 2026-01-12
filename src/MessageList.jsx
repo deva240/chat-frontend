@@ -9,15 +9,14 @@ function MessageList({ messages, currentUserId, onDelete, onEdit }) {
   }, [messages]);
 
   return (
-    <div style={{ padding: "10px", overflowY: "auto" }}>
-      {messages.map((msg) => (
+    <div className="message-list">
+      {messages.map(msg => (
         <Message
           key={msg.id}
           id={msg.id}
           text={msg.text}
-          time={msg.time}
-          user_id={msg.user_id}
           username={msg.username}
+          user_id={msg.user_id}
           currentUserId={currentUserId}
           onDelete={onDelete}
           onEdit={onEdit}

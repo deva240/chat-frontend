@@ -4,11 +4,9 @@ const api = axios.create({
   baseURL: "https://chat-backend-2nh2.onrender.com",
 });
 
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(config => {
   const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+  if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
