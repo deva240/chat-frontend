@@ -1,58 +1,49 @@
 import { useState } from "react";
 import api from "./api";
+import "./Login.css";
 
-function Login({ onLogin, onSwitch }) {
+function Login({ onLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
+  const submit = async () => {
     try {
-      const res = await api.post("/auth/login", {
-        username,
-        password,
-      });
+      const res = await api.post("/auth/login", { username, password });
 
-      // ✅ THIS IS CRITICAL
-      // res.data MUST contain { token, user }
-      onLogin(res.data);
-    } catch (err) {
-      setError("Invalid username or password");
+      const user = {
+        token: res.data.token,
+        id: res.data.user.id,
+        username: res.data.user.username,
+      };
+
+      localStorage.setItem("user", JSON.stringify(user));
+      onLogin(user);
+    } catch {
+      setError("Invalid credentials");
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "auto", padding: "40px" }}>
+    <div className="login-container">
       <h2>Login</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="error">{error}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-          required
-        />
-        <br /><br />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <br /><br />
-        <button type="submit">Login</button>
-      </form>
+      <input
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
 
-      <p style={{ marginTop: "15px" }}>
-        Don't have an account?{" "}
-        <button onClick={onSwitch}>Create one</button>
-      </p>
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <button onClick={submit}>Login</button>
     </div>
   );
 }

@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react";
+import socket from "./socket";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import api from "./api";
-import { socket } from "./socket";
 
-function Chat({ currentUser, onSend, onEdit, onDelete }) {
+function Chat({ user }) {
   const [messages, setMessages] = useState([]);
 
-  // Load messages once
   useEffect(() => {
+    socket.connect();
+
     api.get("/messages").then((res) => {
       setMessages(res.data);
     });
-  }, []);
 
-  // 🔥 SOCKET EVENTS (MATCH BACKEND EXACTLY)
-  useEffect(() => {
     socket.on("new_message", (msg) => {
       setMessages((prev) => [...prev, msg]);
+    });
+
+    socket.on("delete_message", (id) => {
+      setMessages((prev) => prev.filter((m) => m.id !== id));
     });
 
     socket.on("edit_message", (updated) => {
@@ -26,47 +28,36 @@ function Chat({ currentUser, onSend, onEdit, onDelete }) {
       );
     });
 
-    socket.on("delete_message", (id) => {
-      setMessages((prev) => prev.filter((m) => m.id !== id));
-    });
-
     return () => {
       socket.off("new_message");
-      socket.off("edit_message");
       socket.off("delete_message");
+      socket.off("edit_message");
+      socket.disconnect();
     };
   }, []);
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        maxWidth: "600px",
-        margin: "0 auto",
-      }}
-    >
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "10px",
-          backgroundColor: "#f9f9f9",
-          borderRadius: "10px",
-          marginBottom: "10px",
-        }}
-      >
-        <MessageList
-          messages={messages}
-          currentUserId={currentUser.id}
-          onDelete={onDelete}
-          onEdit={onEdit}
-        />
-      </div>
+  const sendMessage = async (text) => {
+    await api.post("/messages", { text });
+  };
 
-      <MessageInput onSend={onSend} />
-    </div>
+  const deleteMessage = async (id) => {
+    await api.delete(`/messages/${id}`);
+  };
+
+  const editMessage = async (id, text) => {
+    await api.put(`/messages/${id}`, { text });
+  };
+
+  return (
+    <>
+      <MessageList
+        messages={messages}
+        currentUserId={user.id}
+        onDelete={deleteMessage}
+        onEdit={editMessage}
+      />
+      <MessageInput onSend={sendMessage} />
+    </>
   );
 }
 
