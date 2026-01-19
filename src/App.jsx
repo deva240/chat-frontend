@@ -1,26 +1,26 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Chat from "./Chat";
+import Login from "./Login";
 import "./styles.css";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
-  useEffect(() => {
-    // Replace with real auth later
-    setCurrentUser({
-      id: 1,
-      name: "Deva",
-    });
-  }, []);
+  const handleLogin = (data) => {
+    setUser(data.user);
+    setToken(data.token);
+    localStorage.setItem("token", data.token);
+  };
 
-  if (!currentUser) {
-    return <div>Loading...</div>;
+  if (!user) {
+    return <Login onLogin={handleLogin} />;
   }
 
   return (
     <div className="app-container">
       <div className="app-header">Realtime Chat</div>
-      <Chat currentUser={currentUser} />
+      <Chat currentUser={user} />
     </div>
   );
 }

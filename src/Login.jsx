@@ -1,40 +1,32 @@
 import { useState } from "react";
 import api from "./api";
-import "./App.css";
-import "./Login.css";
 
 function Login({ onLogin }) {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const submit = async () => {
+  const submit = async (e) => {
+    e.preventDefault();
     try {
-      const res = await api.post("/auth/login", { username, password });
-
-      const user = {
-        token: res.data.token,
-        id: res.data.user.id,
-        username: res.data.user.username,
-      };
-
-      localStorage.setItem("user", JSON.stringify(user));
-      onLogin(user);
-    } catch {
-      setError("Invalid credentials");
+      const res = await api.post("/login", { email, password });
+      onLogin(res.data); // { user, token }
+    } catch (err) {
+      setError("Invalid login");
     }
   };
 
   return (
-    <div className="login-container">
+    <form onSubmit={submit} style={{ padding: "30px" }}>
       <h2>Login</h2>
 
-      {error && <p className="error">{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
 
       <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
       />
 
       <input
@@ -42,10 +34,13 @@ function Login({ onLogin }) {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        style={{ width: "100%", marginBottom: "10px", padding: "8px" }}
       />
 
-      <button onClick={submit}>Login</button>
-    </div>
+      <button style={{ padding: "10px", width: "100%" }}>
+        Login
+      </button>
+    </form>
   );
 }
 
