@@ -1,25 +1,32 @@
 import { useState } from "react";
-import Chat from "./Chat";
 import Login from "./Login";
+import Register from "./Register";
+import Chat from "./Chat";
 import "./styles.css";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [showRegister, setShowRegister] = useState(false);
 
-  const handleLogin = (data) => {
-    setUser(data.user);
-    setToken(data.token);
-    localStorage.setItem("token", data.token);
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
   };
 
   if (!user) {
-    return <Login onLogin={handleLogin} />;
+    return showRegister ? (
+      <Register onSwitch={() => setShowRegister(false)} />
+    ) : (
+      <Login onLogin={setUser} onSwitch={() => setShowRegister(true)} />
+    );
   }
 
   return (
     <div className="app-container">
-      <div className="app-header">Realtime Chat</div>
+      <div className="app-header">
+        Chat App
+        <button onClick={logout}>Logout</button>
+      </div>
       <Chat currentUser={user} />
     </div>
   );

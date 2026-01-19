@@ -1,24 +1,23 @@
 import { useState } from "react";
 import api from "./api";
 
-export default function Login({ onLogin, onSwitch }) {
+export default function Register({ onSwitch }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const submit = async (e) => {
     e.preventDefault();
-    const res = await api.post("/auth/login", { username, password });
-    localStorage.setItem("token", res.data.token);
-    onLogin(res.data.user);
+    await api.post("/auth/register", { username, password });
+    onSwitch();
   };
 
   return (
     <form onSubmit={submit} className="auth-box">
-      <h2>Login</h2>
+      <h2>Register</h2>
       <input placeholder="Username" onChange={e => setUsername(e.target.value)} />
       <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-      <button>Login</button>
-      <p onClick={onSwitch}>Create account</p>
+      <button>Register</button>
+      <p onClick={onSwitch}>Back to login</p>
     </form>
   );
 }
