@@ -38,6 +38,13 @@ function MessageList({ messages, currentUsername, onEdit, onDelete }) {
                 <>
                   <div>{msg.text}</div>
 
+                  <div className="message-time">
+                    {new Date(msg.updated_at).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+
                   {isOwner && (
                     <div className="message-actions">
                       <button

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "./api";
 import socket from "./socket";
 import MessageList from "./MessageList";
@@ -6,17 +6,11 @@ import MessageInput from "./MessageInput";
 
 function Chat({ currentUser }) {
   const [messages, setMessages] = useState([]);
+  const bottomRef = useRef(null);
 
-  // Load existing messages
   useEffect(() => {
-    api
-      .get("/messages")
-      .then((res) => setMessages(res.data))
-      .catch((err) => console.error("Load messages failed", err));
-  }, []);
+    api.get("/messages").then((res) => setMessages(res.data));
 
-  // Realtime listeners
-  useEffect(() => {
     socket.on("new_message", (msg) => {
       setMessages((prev) => [...prev, msg]);
     });
@@ -38,20 +32,14 @@ function Chat({ currentUser }) {
     };
   }, []);
 
-  // Send message (DO NOT manually add to state)
-const sendMessage = async (text) => {
-  try {
-    const res = await api.post("/messages", { text });
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-    // ✅ IMMEDIATELY add message to UI
-    setMessages((prev) => [...prev, res.data]);
-  } catch (err) {
-    console.error("Send message failed:", err);
-  }
-};
+  const sendMessage = async (text) => {
+    await api.post("/messages", { text });
+  };
 
-
-  // These will work once backend routes are added
   const editMessage = async (id, text) => {
     await api.put(`/messages/${id}`, { text });
   };
@@ -61,15 +49,22 @@ const sendMessage = async (text) => {
   };
 
   return (
-    <>
+    <div className="app-container">
+      <div className="app-header">
+        <span>Realtime Chat</span>
+        <button className="logout-btn">Logout</button>
+      </div>
+
       <MessageList
         messages={messages}
         currentUsername={currentUser.username}
         onEdit={editMessage}
         onDelete={deleteMessage}
       />
+
+      <div ref={bottomRef} />
       <MessageInput onSend={sendMessage} />
-    </>
+    </div>
   );
 }
 
