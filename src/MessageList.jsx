@@ -7,15 +7,17 @@ function MessageList({ messages, currentUsername, onEdit, onDelete }) {
   return (
     <div className="chat-body">
       {messages.map((msg) => {
-        const isOwner = msg.username === currentUsername;
+        const isOwn = msg.username === currentUsername;
 
         return (
           <div
             key={msg.id}
-            className={`message-row ${isOwner ? "own" : "other"}`}
+            className={`message-row ${isOwn ? "own" : "other"}`}
           >
             <div className="message-bubble">
-              <div className="message-username">{msg.username}</div>
+              {!isOwn && (
+                <div className="message-username">{msg.username}</div>
+              )}
 
               {editingId === msg.id ? (
                 <>
@@ -23,21 +25,18 @@ function MessageList({ messages, currentUsername, onEdit, onDelete }) {
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
                   />
-                  <div className="message-actions">
-                    <button
-                      onClick={() => {
-                        onEdit(msg.id, editText);
-                        setEditingId(null);
-                      }}
-                    >
-                      Save
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => {
+                      onEdit(msg.id, editText);
+                      setEditingId(null);
+                    }}
+                  >
+                    Save
+                  </button>
                 </>
               ) : (
                 <>
-                  <div>{msg.text}</div>
-
+                  <div className="message-text">{msg.text}</div>
                   <div className="message-time">
                     {new Date(msg.updated_at).toLocaleTimeString([], {
                       hour: "2-digit",
@@ -45,7 +44,7 @@ function MessageList({ messages, currentUsername, onEdit, onDelete }) {
                     })}
                   </div>
 
-                  {isOwner && (
+                  {isOwn && (
                     <div className="message-actions">
                       <button
                         onClick={() => {

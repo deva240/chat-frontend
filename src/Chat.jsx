@@ -8,6 +8,7 @@ function Chat({ currentUser }) {
   const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
 
+  // Load messages + socket listeners
   useEffect(() => {
     api.get("/messages").then((res) => setMessages(res.data));
 
@@ -32,6 +33,7 @@ function Chat({ currentUser }) {
     };
   }, []);
 
+  // Auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -49,21 +51,17 @@ function Chat({ currentUser }) {
   };
 
   return (
-    <div className="app-container">
-      <div className="app-header">
-        <span>Realtime Chat</span>
-        <button className="logout-btn">Logout</button>
+    <div className="chat-wrapper">
+      <div className="chat-container">
+        <MessageList
+          messages={messages}
+          currentUsername={currentUser.username}
+          onEdit={editMessage}
+          onDelete={deleteMessage}
+        />
+        <div ref={bottomRef} />
+        <MessageInput onSend={sendMessage} />
       </div>
-
-      <MessageList
-        messages={messages}
-        currentUsername={currentUser.username}
-        onEdit={editMessage}
-        onDelete={deleteMessage}
-      />
-
-      <div ref={bottomRef} />
-      <MessageInput onSend={sendMessage} />
     </div>
   );
 }

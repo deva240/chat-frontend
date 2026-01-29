@@ -1,62 +1,94 @@
+/* Chat wrapper center */
+.chat-wrapper {
+  display: flex;
+  justify-content: center;
+  background: #f4f6fb;
+  height: calc(100vh - 50px);
+}
+
+/* Main chat box */
 .chat-container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
 }
 
-.chat-title {
-  text-align: center;
-}
-
-.message-list {
-  max-height: 400px;
+/* Messages area */
+.chat-body {
+  flex: 1;
+  padding: 16px;
   overflow-y: auto;
-  padding: 10px;
-  border: 1px solid #ddd;
-  margin-bottom: 10px;
 }
 
-.msg {
-  margin: 8px 0;
-  padding: 10px;
-  border-radius: 10px;
-  max-width: 75%;
+/* Row alignment */
+.message-row {
+  display: flex;
+  margin-bottom: 12px;
 }
 
-.mine {
-  background: #d9fdd3;
-  margin-left: auto;
+.message-row.own {
+  justify-content: flex-end;
 }
 
-.other {
+.message-row.other {
+  justify-content: flex-start;
+}
+
+/* Bubble */
+.message-bubble {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  position: relative;
+}
+
+.message-row.own .message-bubble {
+  background: #4f46e5;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-row.other .message-bubble {
   background: #f1f1f1;
+  color: #111;
+  border-bottom-left-radius: 4px;
 }
 
-.msg-actions {
-  margin-top: 5px;
+/* Username */
+.message-username {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #555;
 }
 
-.msg-actions button {
+/* Time */
+.message-time {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Actions */
+.message-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.message-actions button {
   background: none;
   border: none;
+  font-size: 12px;
   cursor: pointer;
-  margin-right: 5px;
 }
 
-.message-input {
-  display: flex;
-  gap: 10px;
-}
-
-.message-input input {
-  flex: 1;
-  padding: 10px;
-}
-
-.message-input button {
-  padding: 10px 20px;
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 5px;
+.message-actions .delete {
+  color: #ff5b5b;
 }
