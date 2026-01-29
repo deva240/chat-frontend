@@ -4,7 +4,7 @@ import socket from "./socket";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 
-function Chat({ currentUser }) {
+function Chat({ currentUser, onLogout }) {
   const [messages, setMessages] = useState([]);
   const bottomRef = useRef(null);
 
@@ -33,7 +33,7 @@ function Chat({ currentUser }) {
     };
   }, []);
 
-  // Auto-scroll
+  // ✅ Auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -52,6 +52,14 @@ function Chat({ currentUser }) {
 
   return (
     <div className="chat-wrapper">
+      {/* ✅ HEADER ONLY HERE */}
+      <div className="chat-header">
+        <span>Realtime Chat</span>
+        <button className="logout-btn" onClick={onLogout}>
+          Logout
+        </button>
+      </div>
+
       <div className="chat-container">
         <MessageList
           messages={messages}
@@ -59,9 +67,11 @@ function Chat({ currentUser }) {
           onEdit={editMessage}
           onDelete={deleteMessage}
         />
+
         <div ref={bottomRef} />
-        <MessageInput onSend={sendMessage} />
       </div>
+
+      <MessageInput onSend={sendMessage} />
     </div>
   );
 }
