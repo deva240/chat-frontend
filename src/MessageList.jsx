@@ -15,11 +15,7 @@ function MessageList({ messages, currentUsername, onEdit, onDelete }) {
             className={`message-row ${isOwner ? "own" : "other"}`}
           >
             <div className="message-bubble">
-              {!isOwner && (
-                <div className="message-username">
-                  {msg.username}
-                </div>
-              )}
+              <div className="message-username">{msg.username}</div>
 
               {editingId === msg.id ? (
                 <>
@@ -27,18 +23,20 @@ function MessageList({ messages, currentUsername, onEdit, onDelete }) {
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
                   />
-                  <button
-                    onClick={() => {
-                      onEdit(msg.id, editText);
-                      setEditingId(null);
-                    }}
-                  >
-                    Save
-                  </button>
+                  <div className="message-actions">
+                    <button
+                      onClick={() => {
+                        onEdit(msg.id, editText);
+                        setEditingId(null);
+                      }}
+                    >
+                      Save
+                    </button>
+                  </div>
                 </>
               ) : (
                 <>
-                  <div className="message-text">{msg.text}</div>
+                  <div>{msg.text}</div>
 
                   {isOwner && (
                     <div className="message-actions">
