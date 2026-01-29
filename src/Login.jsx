@@ -37,7 +37,8 @@ export default function Login({ onLogin, onSwitch }) {
     <form onSubmit={submit} className="auth-box">
       <h2>Login</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <div className="error">{error}</div>}
+
 
       <input
         placeholder="Username"
