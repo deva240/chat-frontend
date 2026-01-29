@@ -54,16 +54,6 @@ body {
   border-radius: 6px;
   cursor: pointer;
 }
-
-/* ================= CHAT BODY ================= */
-
-.chat-body {
-  flex: 1;
-  padding: 16px;
-  overflow-y: auto;
-  background: linear-gradient(#eef2ff, #f8fafc);
-}
-
 /* ================= MESSAGE ROW ================= */
 
 .message-row {
@@ -265,4 +255,28 @@ html, body {
   color: white;
   border: none;
   cursor: pointer;
+}
+/* Force visible scrollbar */
+.chat-body {
+  scrollbar-width: thin;              /* Firefox */
+  scrollbar-color: #9ca3af #eef2ff;   /* thumb track */
+}
+
+/* Chrome / Edge / Safari */
+.chat-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-body::-webkit-scrollbar-track {
+  background: #eef2ff;
+  border-radius: 10px;
+}
+
+.chat-body::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 10px;
+}
+
+.chat-body::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
 }
