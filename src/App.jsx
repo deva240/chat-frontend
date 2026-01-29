@@ -6,32 +6,36 @@ import "./styles.css";
 import "./App.css";
 import "./Login.css";
 
-
 function App() {
   const [user, setUser] = useState(null);
   const [showRegister, setShowRegister] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // 🔁 Restore login on refresh (REAL APP BEHAVIOR)
+  // 🔄 Restore session on refresh (SAFE)
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
+    try {
+      const savedUser = localStorage.getItem("user");
+      const token = localStorage.getItem("token");
 
-    if (savedUser && token) {
-      setUser(JSON.parse(savedUser));
+      if (savedUser && token) {
+        setUser(JSON.parse(savedUser));
+      }
+    } catch (err) {
+      // corrupted storage → clean it
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }, []);
 
-  // ✅ Called after successful login
-  const handleLogin = (data) => {
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    setUser(data.user);
+  // ✅ Called after successful login OR register
+  const handleLogin = (user) => {
+    setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
   };
 
-  // 🚪 Logout (switch user like real apps)
+  // 🚪 Logout
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -39,7 +43,7 @@ function App() {
     setShowRegister(false);
   };
 
-  // ⏳ Prevent flicker on reload
+  // ⏳ Prevent flicker
   if (loading) {
     return <div style={{ padding: "40px" }}>Loading...</div>;
   }
@@ -47,12 +51,9 @@ function App() {
   // 🔐 Auth screens
   if (!user) {
     return showRegister ? (
-      <Register onSwitch={() => setShowRegister(false)} />
+      <Register onLogin={handleLogin} onSwitch={() => setShowRegister(false)} />
     ) : (
-      <Login
-        onLogin={handleLogin}
-        onSwitch={() => setShowRegister(true)}
-      />
+      <Login onLogin={handleLogin} onSwitch={() => setShowRegister(true)} />
     );
   }
 
