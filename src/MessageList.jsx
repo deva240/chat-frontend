@@ -12,49 +12,55 @@ function MessageList({ messages, currentUsername, onEdit, onDelete }) {
         return (
           <div
             key={msg.id}
-            className={`message ${isOwner ? "own" : "other"}`}
+            className={`message-row ${isOwner ? "own" : "other"}`}
           >
-            <strong>{msg.username}</strong>
+            <div className="message-bubble">
+              {!isOwner && (
+                <div className="message-username">
+                  {msg.username}
+                </div>
+              )}
 
-            {editingId === msg.id ? (
-              <>
-                <input
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                />
-                <button
-                  onClick={() => {
-                    onEdit(msg.id, editText);
-                    setEditingId(null);
-                  }}
-                >
-                  Save
-                </button>
-              </>
-            ) : (
-              <>
-                <div>{msg.text}</div>
+              {editingId === msg.id ? (
+                <>
+                  <input
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                  />
+                  <button
+                    onClick={() => {
+                      onEdit(msg.id, editText);
+                      setEditingId(null);
+                    }}
+                  >
+                    Save
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="message-text">{msg.text}</div>
 
-                {isOwner && (
-                  <div className="message-actions">
-                    <button
-                      onClick={() => {
-                        setEditingId(msg.id);
-                        setEditText(msg.text);
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete"
-                      onClick={() => onDelete(msg.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
+                  {isOwner && (
+                    <div className="message-actions">
+                      <button
+                        onClick={() => {
+                          setEditingId(msg.id);
+                          setEditText(msg.text);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="delete"
+                        onClick={() => onDelete(msg.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         );
       })}

@@ -1,23 +1,30 @@
 import { useState } from "react";
 
-export default function MessageInput({ onSend }) {
+function MessageInput({ onSend }) {
   const [text, setText] = useState("");
 
-  const submit = (e) => {
-    e.preventDefault();
+  const send = () => {
     if (!text.trim()) return;
     onSend(text);
     setText("");
   };
 
   return (
-    <form onSubmit={submit} className="message-input">
-      <input
+    <div className="chat-input">
+      <textarea
+        placeholder="Type a message…"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Type a message..."
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            send();
+          }
+        }}
       />
-      <button>Send</button>
-    </form>
+      <button onClick={send}>Send</button>
+    </div>
   );
 }
+
+export default MessageInput;
