@@ -280,3 +280,30 @@ html, body {
 .chat-body::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
 }
+/* Scroll buttons */
+.scroll-btn {
+  position: absolute;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #4f46e5;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+.scroll-btn.up {
+  bottom: 110px;
+}
+
+.scroll-btn.down {
+  bottom: 60px;
+}
+
+.scroll-btn:hover {
+  background: #4338ca;
+}
