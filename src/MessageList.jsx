@@ -1,39 +1,40 @@
 import { useState } from "react";
 
-function MessageList({ messages, currentUserId, onEdit, onDelete }) {
+function MessageList({ messages, currentUsername, onEdit, onDelete }) {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState("");
 
   return (
     <div className="chat-body">
       {messages.map((msg) => {
-        const isOwner = msg.userId === currentUserId;
+        const isOwner = msg.username === currentUsername;
 
         return (
           <div
             key={msg.id}
             className={`message ${isOwner ? "own" : "other"}`}
           >
+            <strong>{msg.username}</strong>
+
             {editingId === msg.id ? (
               <>
                 <input
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
                 />
-                <div className="message-actions">
-                  <button
-                    onClick={() => {
-                      onEdit(msg.id, editText);
-                      setEditingId(null);
-                    }}
-                  >
-                    Save
-                  </button>
-                </div>
+                <button
+                  onClick={() => {
+                    onEdit(msg.id, editText);
+                    setEditingId(null);
+                  }}
+                >
+                  Save
+                </button>
               </>
             ) : (
               <>
                 <div>{msg.text}</div>
+
                 {isOwner && (
                   <div className="message-actions">
                     <button

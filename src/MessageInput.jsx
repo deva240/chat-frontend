@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function MessageInput({ onSend }) {
+export default function MessageInput({ onSend }) {
   const [text, setText] = useState("");
 
   const submit = (e) => {
@@ -11,15 +11,13 @@ function MessageInput({ onSend }) {
   };
 
   return (
-    <form className="chat-input" onSubmit={submit}>
+    <form onSubmit={submit} className="message-input">
       <input
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Type a message..."
       />
-      <button type="submit">Send</button>
+      <button>Send</button>
     </form>
   );
 }
-
-export default MessageInput;

@@ -7,9 +7,16 @@ import MessageInput from "./MessageInput";
 function Chat({ currentUser }) {
   const [messages, setMessages] = useState([]);
 
+  // Load existing messages
   useEffect(() => {
-    api.get("/messages").then((res) => setMessages(res.data));
+    api
+      .get("/messages")
+      .then((res) => setMessages(res.data))
+      .catch((err) => console.error("Load messages failed", err));
+  }, []);
 
+  // Realtime listeners
+  useEffect(() => {
     socket.on("new_message", (msg) => {
       setMessages((prev) => [...prev, msg]);
     });
@@ -31,13 +38,16 @@ function Chat({ currentUser }) {
     };
   }, []);
 
+  // Send message (DO NOT manually add to state)
   const sendMessage = async (text) => {
-    await api.post("/messages", {
-      text,
-      userId: currentUser.id,
-    });
+    try {
+      await api.post("/messages", { text });
+    } catch (err) {
+      console.error("Send message failed", err);
+    }
   };
 
+  // These will work once backend routes are added
   const editMessage = async (id, text) => {
     await api.put(`/messages/${id}`, { text });
   };
@@ -50,7 +60,7 @@ function Chat({ currentUser }) {
     <>
       <MessageList
         messages={messages}
-        currentUserId={currentUser.id}
+        currentUsername={currentUser.username}
         onEdit={editMessage}
         onDelete={deleteMessage}
       />
