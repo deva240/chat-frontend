@@ -39,13 +39,17 @@ function Chat({ currentUser }) {
   }, []);
 
   // Send message (DO NOT manually add to state)
-  const sendMessage = async (text) => {
-    try {
-      await api.post("/messages", { text });
-    } catch (err) {
-      console.error("Send message failed", err);
-    }
-  };
+const sendMessage = async (text) => {
+  try {
+    const res = await api.post("/messages", { text });
+
+    // ✅ IMMEDIATELY add message to UI
+    setMessages((prev) => [...prev, res.data]);
+  } catch (err) {
+    console.error("Send message failed:", err);
+  }
+};
+
 
   // These will work once backend routes are added
   const editMessage = async (id, text) => {
