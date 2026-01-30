@@ -182,7 +182,7 @@ body {
   cursor: pointer;
 }
 /* Whole page */
-html, body {
+html,body {
   height: 100%;
   margin: 0;
 }
@@ -191,6 +191,8 @@ body {
   justify-content: center;
   align-items: center;
   background: #f4f6f8;
+   overflow: hidden; /* prevent page scroll */
+
 }
 
 /* Main app wrapper */
@@ -203,7 +205,7 @@ body {
   background: #f4f6fb;
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-  overflow: visible;
+ 
 }
 
 /* Header */
