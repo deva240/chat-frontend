@@ -53,10 +53,7 @@ function Chat({ currentUser, onLogout }) {
 return (
   <div className="chat-wrapper">
     {/* Header (NOT scrollable) */}
-    <div className="chat-header">
-      
-      
-    </div>
+   
 
     {/* ✅ ONLY scrollable area */}
     <div className="chat-container chat-body">
