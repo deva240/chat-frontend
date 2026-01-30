@@ -60,7 +60,12 @@ function App() {
   // 💬 Chat screen
   return (
     <div className="app-container">
-      
+      <div className="app-header">
+        <span>Realtime Chat</span>
+        <button onClick={logout} className="logout-btn">
+          Logout
+        </button>
+      </div>
 
       <Chat currentUser={user} />
     </div>

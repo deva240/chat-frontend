@@ -54,10 +54,8 @@ return (
   <div className="chat-wrapper">
     {/* Header */}
     <div className="chat-header">
-      <span>Realtime Chat</span>
-      <button className="logout-btn" onClick={onLogout}>
-        Logout
-      </button>
+      
+      
     </div>
 
     {/* Scrollable messages */}
