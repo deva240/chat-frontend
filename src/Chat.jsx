@@ -50,30 +50,34 @@ function Chat({ currentUser, onLogout }) {
     await api.delete(`/messages/${id}`);
   };
 
-  return (
-    <div className="chat-wrapper">
-      {/* ✅ HEADER ONLY HERE */}
-      <div className="chat-header">
-        <span>Realtime Chat</span>
-        <button className="logout-btn" onClick={onLogout}>
-          Logout
-        </button>
-      </div>
-
-      <div className="chat-container">
-        <MessageList
-          messages={messages}
-          currentUsername={currentUser.username}
-          onEdit={editMessage}
-          onDelete={deleteMessage}
-        />
-
-        <div ref={bottomRef} />
-      </div>
-
-      <MessageInput onSend={sendMessage} />
+return (
+  <div className="chat-wrapper">
+    {/* Header */}
+    <div className="chat-header">
+      <span>Realtime Chat</span>
+      <button className="logout-btn" onClick={onLogout}>
+        Logout
+      </button>
     </div>
-  );
+
+    {/* Scrollable messages */}
+    <div className="chat-container">
+      <MessageList
+        messages={messages}
+        currentUsername={currentUser.username}
+        onEdit={editMessage}
+        onDelete={deleteMessage}
+      />
+
+      {/* Auto-scroll anchor */}
+      <div ref={bottomRef} />
+    </div>
+
+    {/* Input (fixed at bottom) */}
+    <MessageInput onSend={sendMessage} />
+  </div>
+);
+
 }
 
 export default Chat;
