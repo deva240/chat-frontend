@@ -30,7 +30,7 @@ body {
   flex-direction: column;
   background: #ffffff;
   border-radius: 14px;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 12px 30px rgba(0,0,0,0.15);
 }
 
@@ -208,7 +208,7 @@ html, body {
   background: #f4f6fb;
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Header */
