@@ -21,18 +21,7 @@ body {
 
 /* ================= APP LAYOUT ================= */
 
-.app-container {
-  width: 100%;
-  max-width: 420px;
-  height: 92vh;
-  margin: 20px auto;
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  border-radius: 14px;
-  overflow: visible;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-}
+
 
 /* ================= HEADER ================= */
 
@@ -196,6 +185,12 @@ body {
 html, body {
   height: 100%;
   margin: 0;
+}
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f6f8;
 }
 
 /* Main app wrapper */
