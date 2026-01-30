@@ -52,15 +52,16 @@ function Chat({ currentUser, onLogout }) {
 
 return (
   <div className="chat-wrapper">
-    {/* Header */}
+    {/* Header (NOT scrollable) */}
     <div className="chat-header">
-      
-      
+      <span>Realtime Chat</span>
+      <button className="logout-btn" onClick={onLogout}>
+        Logout
+      </button>
     </div>
 
-    {/* Scrollable messages */}
-   <div className="chat-container chat-body">
-
+    {/* ✅ ONLY scrollable area */}
+    <div className="chat-container chat-body">
       <MessageList
         messages={messages}
         currentUsername={currentUser.username}
@@ -72,10 +73,11 @@ return (
       <div ref={bottomRef} />
     </div>
 
-    {/* Input (fixed at bottom) */}
+    {/* Input (NOT scrollable) */}
     <MessageInput onSend={sendMessage} />
   </div>
 );
+
 
 }
 
