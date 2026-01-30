@@ -59,7 +59,8 @@ return (
     </div>
 
     {/* Scrollable messages */}
-    <div className="chat-container">
+   <div className="chat-container chat-body">
+
       <MessageList
         messages={messages}
         currentUsername={currentUser.username}
