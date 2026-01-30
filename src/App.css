@@ -191,7 +191,7 @@ body {
   justify-content: center;
   align-items: center;
   background: #f4f6f8;
-   overflow: hidden; /* prevent page scroll */
+   overflow: visible; /* prevent page scroll */
 
 }
 
