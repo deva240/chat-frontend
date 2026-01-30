@@ -191,7 +191,7 @@ body {
   justify-content: center;
   align-items: center;
   background: #f4f6f8;
-   overflow: visible; /* prevent page scroll */
+   overflow: hidden; /* prevent page scroll */
 
 }
 
@@ -205,7 +205,6 @@ body {
   background: #f4f6fb;
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-  overflow: visible;
  
 }
 
